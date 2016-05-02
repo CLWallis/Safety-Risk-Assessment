@@ -13,5 +13,7 @@
 </asp:Content>
 
 <asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
-
+    <h3><asp:Label ID="lblMachineNumberUpdate" runat="server"></asp:Label></h3>
+    <h3><asp:Label ID="lblMachineTypeUpdate" runat="server"></asp:Label></h3>
+    <h3><asp:Label ID="lblMachineDateUpdate" runat="server"></asp:Label></h3>
 </asp:Content>

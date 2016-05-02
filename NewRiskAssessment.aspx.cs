@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 using System.Data;
 using System.Data.SqlClient;
 using SRA.ClassCode;
@@ -45,10 +41,10 @@ namespace SRA
             string lastName = txtParticipantLastName.Text;
             string title = txtParticipantTitle.Text;
 
-            //NOTE: first time through button click - on initial page load the list was 
-            //initialized and even though empty was saved in a session variable, so session 
-            //variable is empty (not null) and list is empty (not null)
-            listOfFirstNames = Session["participantFirstName"] as List<string>; //cast to list type
+            /* NOTE: first time through button click - on initial page load the list was 
+            initialized and even though empty was saved in a session variable, so session 
+            variable is empty (not null) and list is empty (not null) */
+            listOfFirstNames = Session["participantFirstName"] as List<string>; //cast to type list
             listOfLastNames = Session["participantLastName"] as List<string>;
             listOfTitles = Session["participantTitle"] as List<string>;
             
@@ -82,8 +78,8 @@ namespace SRA
         protected void btnCreateNewRiskAssessment(object sender, EventArgs e)
         {
             //code to add information to DB
-            InsertNewRiskAssessmentInfo(); //for machine
-            InsertMachineParticipants(); //for participants
+            //InsertNewRiskAssessmentInfo(); //for machine
+            //InsertMachineParticipants(); //for participants
 
             //Response.Redirect will begin a new session, therefore clearing session variable and viewState
             //however the false prevents this
@@ -99,7 +95,8 @@ namespace SRA
         {
             //variable to hold the value of machineID for the last inserted machine
             int last;
-           
+            
+            //get database connection
             Utils ut = new Utils();
             string connectionString = ut.ConnectionString;
             SqlConnection con = new SqlConnection(connectionString);
@@ -114,8 +111,8 @@ namespace SRA
 
                 con.Open();
                 //lblDisplayParticipants.Text = "Connection Established";
+                //get value of last inserted machineID, save to session
                 last = (int)cmd.ExecuteScalar();
-
                 Session["lastInsertedMachineID"] = last;
             }
             catch (SqlException ex)
@@ -129,6 +126,7 @@ namespace SRA
                 con.Close();
             }          
         }
+
         private void InsertMachineParticipants() 
         {
             //transfer lists from session to variables
@@ -136,16 +134,18 @@ namespace SRA
             listOfLastNames = Session["participantLastName"] as List<string>;
             listOfTitles = Session["participantTitle"] as List<string>;
             
+            //get database connection
             Utils ut = new Utils();
             string connectionString = ut.ConnectionString;
             SqlConnection con = new SqlConnection(connectionString);
 
             try
             {
-                //open the connection once
+                //open the connection
                 con.Open();
-                 
-                //iterate through list of participants, call the stored procedure, bind the values, execute query
+
+                //iterate through list of participants, call the stored procedure, bind the values,
+                //execute query
                  for (int i = 0; i < listOfFirstNames.Count; i++)
                  {
 

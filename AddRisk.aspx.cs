@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 using System.Data;
-using System.Configuration;
 using System.Data.SqlClient;
-using System.Web.Configuration;
 using SRA.ClassCode;
 
 namespace SRA
@@ -31,9 +24,8 @@ namespace SRA
                  
                 FillDropDowns();
                 GetFrequencyValues();
-                GetMachineNumber();
-                GetMachineType();
-                
+                GetMachineIdentity();
+               
                 //if (Session["lastInsertedMachineID"] != null)
                 //{
                 //    int last = (int)(Session["lastInsertedMachineID"]);
@@ -46,7 +38,7 @@ namespace SRA
         private string dropdownName;
         private string dropdownValue;
      
-        //strings must be used to fill the dropdowns
+        //dropdowns must be filled with strings
         protected void FillDropDowns()
         {
             string[] numberOfPersonsValues = new string[] { "1", "2", "4", "8", "12" };
@@ -102,49 +94,86 @@ namespace SRA
             }
         }
 
+        //get machine number and type
+        public void GetMachineIdentity()
+        {    
+            //last is machineId of selected machine
+            int last = 2;
+            //int last = (int)(Session["lastInsertedMachineID"]);
+
+            try
+            {
+                Utils ut = new Utils(last);
+                lblMachineNumber.Text = "Machine Number: " + ut.MachineNumber;
+                lblMachineType.Text = "Machine Type: " + ut.MachineType;
+            }
+            catch (Exception ex)//right now set up for testing
+            {
+                lblMachineNumber.Text = ex.Message;
+            }
+        }
+/*
         //get the machine number to display
         public void GetMachineNumber()
         {
-            //int last = 2;
-            int last = (int)(Session["lastInsertedMachineID"]);
-            Utils ut = new Utils();
-            string connectionString = ut.ConnectionString;
-
+            //last is machineId of selected machine
+            int last = 2;
+            //int last = (int)(Session["lastInsertedMachineID"]);
+            try
+            {
+                Utils ut = new Utils(last);
+                lblMachineNumber.Text = "Machine Number: " + ut.MachineNumber;
+            }
+            catch (Exception ex)//right now set up for testing
+            {
+                lblMachineNumber.Text = ex.Message;
+            }
+            //Utils ut = new Utils();
+            //string connectionString = ut.ConnectionString;
             //'using' instead of try/catch/finally, just because...
             //using calls Dispose(), therefore don't explicitly need to close connection
-            using (SqlConnection con = new SqlConnection(connectionString))
-            {
-                SqlCommand cmd = new SqlCommand("spGetMachineNumber", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@machineId", last);
-                con.Open();
-                lblMachineNumber.Text = "Machine Number: " + cmd.ExecuteScalar().ToString();
-            }
+            //using (SqlConnection con = new SqlConnection(connectionString))
+            //{
+            //    SqlCommand cmd = new SqlCommand("spGetMachineNumber", con);
+            //    cmd.CommandType = CommandType.StoredProcedure;
+            //    cmd.Parameters.AddWithValue("@machineId", last);
+            //    con.Open();
+            //    lblMachineNumber.Text = "Machine Number: " + cmd.ExecuteScalar().ToString();
+            //}
         }
-
+*/        
         //get the machine type to display
-        public void GetMachineType()
+/*        public void GetMachineType()
         {
-            //int last = 2;
-            int last = (int)(Session["lastInsertedMachineID"]);
-            Utils ut = new Utils();
-            string connectionString = ut.ConnectionString;
-            using (SqlConnection con = new SqlConnection(connectionString))
+            int last = 2;
+            //int last = (int)(Session["lastInsertedMachineID"]);
+            try
             {
-                SqlCommand cmd = new SqlCommand("spGetMachineType", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@machineId", last);
-                con.Open();
-                lblMachineType.Text = "Machine Type: " + cmd.ExecuteScalar().ToString();
+                Utils ut = new Utils(last);
+                lblMachineType.Text = "Machine Number: " + ut.MachineType;
             }
+            catch (Exception ex)//right now set up for testing
+            {
+                lblMachineNumber.Text = ex.Message;
+            }
+            //Utils ut = new Utils();
+            //string connectionString = ut.ConnectionString;
+            //using (SqlConnection con = new SqlConnection(connectionString))
+            //{
+            //    SqlCommand cmd = new SqlCommand("spGetMachineType", con);
+            //    cmd.CommandType = CommandType.StoredProcedure;
+            //    cmd.Parameters.AddWithValue("@machineId", last);
+            //    con.Open();
+            //    lblMachineType.Text = "Machine Type: " + cmd.ExecuteScalar().ToString();
+            //}
         }
-
-        //when a new value is chosen in hazard severity dropdown then collect the dropdown name and selected value
-        //then update the other severity dropdowns by calling UpdateDropDowns and update all risks by calling UpdateRisks()
-        //etc...for whatever dropdown is changed
+*/
+        //when a new value is chosen in hazard severity dropdown then collect the dropdown name
+        //and selected value then update the other severity dropdowns by calling UpdateDropDowns
+        //and update all risks by calling UpdateRisks() etc...for whatever dropdown is changed
 
         /******************** HAZARD ********************/
-        
+
         public void UpdateHazardRiskSeverity(Object sender, EventArgs e) 
         {
             dropdownValue = ddlHazardSeverity.SelectedValue;
@@ -249,8 +278,9 @@ namespace SRA
         //determine what drop down was changed and update appropriate dropdown lists
         public void UpdateDropDowns(string dropdownName, string dropdownValue) { 
             
-            //NOTE: Strings can't be switched the same way integers values can so C# compiler generates code that
-            //is the same as an if/else chain. For a large number of string comparisons it is more efficient to use if/else
+            /* NOTE: Strings can't be switched the same way integers values can so C# compiler generates
+            code that is the same as an if/else chain. For a large number of string comparisons
+            it is more efficient to use if/else */
 
             //if the ddlHazardSeverity is changed then we need to change ddlReductionSolutionSeverity and ddlAdminSolutionSeverity
             if (String.Equals("ddlHazardSeverity", dropdownName)) 
@@ -359,7 +389,7 @@ namespace SRA
         //Call method to insert new risk into db on button click
         protected void btnNewRisk_Click(object sender, EventArgs e)
         {
-            InsertRisk();
+            //InsertRisk();
         }
         
         //Method to insert a risk info into the db
@@ -402,7 +432,6 @@ namespace SRA
                 con.Open();
                 cmd.ExecuteNonQuery();
             }
-            //catch(System.Data.SqlClient.SqlException ex)
             catch(SqlException ex)
             {
                 string msg = "Insert Error";
@@ -413,11 +442,11 @@ namespace SRA
             {
                 con.Close();
 
+                //if we refresh here, error messages will never be seen
                 //refresh page
                 Response.Redirect(Request.RawUrl);
                 Context.ApplicationInstance.CompleteRequest();
-            }
-           
+            }        
         }
         /*********** DONE: REDIRECT TO DEFAULT.ASPX MENU **********/
 

@@ -11,5 +11,32 @@ namespace SRA {
     
     
     public partial class InProcessRiskAssessments {
+        
+        /// <summary>
+        /// lblMachineNumberUpdate control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblMachineNumberUpdate;
+        
+        /// <summary>
+        /// lblMachineTypeUpdate control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblMachineTypeUpdate;
+        
+        /// <summary>
+        /// lblMachineDateUpdate control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblMachineDateUpdate;
     }
 }
